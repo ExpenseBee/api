@@ -10,6 +10,6 @@ if ! [[ $commit_msg =~ $regex ]]; then
     echo "Commit message does not match the required format:"
     echo "  <type>: <description>"
     echo "Types: feat, fix, docs, style, refactor, perf, test, chore, build, ci, revert"
-    echo "Description should be 1-50 characters."
+    echo "Description should be 1- 100 characters."
     exit 1
 fi

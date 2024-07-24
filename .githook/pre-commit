@@ -1,7 +1,4 @@
 #!/bin/sh
 
-# Run Maven tests
-mvn test || exit 1
-
 # Run Maven build
 mvn clean install || exit 1
