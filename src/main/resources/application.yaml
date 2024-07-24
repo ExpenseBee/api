@@ -1,3 +1,9 @@
 spring:
-  application:
-    name: api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/expensebee
+    username: expensebee
+    password: expensebee
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update

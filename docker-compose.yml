@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  db:
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      POSTGRES_DB: expensebee
+      POSTGRES_USER: expensebee
+      POSTGRES_PASSWORD: expensebee
+    ports:
+      - "5432:5432"
