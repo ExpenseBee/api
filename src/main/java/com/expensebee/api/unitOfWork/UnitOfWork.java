@@ -1,5 +1,6 @@
 package com.expensebee.api.unitOfWork;
 
+import com.expensebee.api.unitOfWork.repository.RoleRepository;
 import com.expensebee.api.unitOfWork.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -17,6 +18,9 @@ public class UnitOfWork implements AutoCloseable {
 
   @Getter
   private final UserRepository userRepository;
+
+  @Getter
+  private final RoleRepository roleRepository;
 
 
   @Transactional
