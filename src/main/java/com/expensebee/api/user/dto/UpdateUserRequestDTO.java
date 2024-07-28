@@ -1,5 +1,6 @@
 package com.expensebee.api.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserDTO {
-  private String email;
-  private String password;
+public class UpdateUserRequestDTO {
+  @NotBlank(message = "First is blank!")
   private String firstName;
+
+  @NotBlank(message = "Last is blank!")
   private String lastName;
 }

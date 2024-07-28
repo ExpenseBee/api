@@ -70,7 +70,12 @@ public class User implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    Set<GrantedAuthority> authorities = new HashSet<>();
+    for (Role role : roles) {
+      authorities.add((GrantedAuthority) role::getName);
+    }
+
+    return authorities;
   }
 
   @Override

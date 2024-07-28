@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:postgresql://localhost:5432/expensebee
     username: expensebee
@@ -6,4 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:batatadoce}
