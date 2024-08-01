@@ -4,6 +4,7 @@ import com.expensebee.api.unitOfWork.interfaces.UnitOfWork;
 import com.expensebee.api.user.entity.User;
 import com.expensebee.api.user.interfaces.UserService;
 import com.expensebee.api.user.interfaces.UserMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,10 +22,10 @@ public class UserServiceImpl implements UserService {
     if (username.isBlank()){
       throw new IllegalArgumentException("Username is blank");
     }
-    return uow.getUserRepository().findByUserName(username);
+    return uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
   }
 
   public User findByUserName(String userName) {
-    return uow.getUserRepository().findByEmail(userName);
+    return uow.getUserRepository().findByEmail(userName).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
   }
 }

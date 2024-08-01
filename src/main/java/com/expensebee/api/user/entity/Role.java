@@ -18,7 +18,9 @@ public class Role {
   @Column(name = "role_id")
   private long id;
 
-  private String name;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, unique = true)
+  private Values name;
 
   @CreationTimestamp()
   private Date createdAt;

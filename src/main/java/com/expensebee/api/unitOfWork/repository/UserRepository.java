@@ -3,11 +3,11 @@ package com.expensebee.api.unitOfWork.repository;
 import com.expensebee.api.unitOfWork.repository.interfaces.IUserRepository;
 
 import com.expensebee.api.user.entity.User;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,17 +15,15 @@ import java.util.UUID;
 public class UserRepository {
   private final IUserRepository IUserRepository;
 
-  public User findById(UUID id) {
-    return IUserRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("User with this id not found"));
+  public Optional<User> findById(UUID id) {
+    return IUserRepository.findById(id);
   }
 
-  public User findByEmail(String email) {
-    return IUserRepository.findByEmail(email)
-        .orElseThrow(() -> new EntityNotFoundException("User with this email not found"));
+  public Optional<User> findByEmail(String email) {
+    return IUserRepository.findByEmail(email);
   }
 
-  public User findByUserName(String userName) {
+  public Optional<User> findByUserName(String userName) {
     return this.findByEmail(userName);
   }
 

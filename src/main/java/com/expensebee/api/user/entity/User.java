@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
@@ -42,7 +43,7 @@ public class User implements UserDetails {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private Set<Role> roles;
+  private List<Role> roles;
 
   @CreationTimestamp()
   @Column(name = "created_at")
@@ -72,7 +73,7 @@ public class User implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     Set<GrantedAuthority> authorities = new HashSet<>();
     for (Role role : roles) {
-      authorities.add((GrantedAuthority) role::getName);
+      authorities.add(new SimpleGrantedAuthority(role.getName().name()));
     }
 
     return authorities;
