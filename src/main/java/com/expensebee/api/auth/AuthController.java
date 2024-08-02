@@ -4,7 +4,6 @@ import com.expensebee.api.auth.dto.LoginDTO;
 import com.expensebee.api.auth.dto.LoginResponseDTO;
 import com.expensebee.api.user.dto.CreateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
