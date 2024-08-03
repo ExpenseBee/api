@@ -48,6 +48,7 @@ public class WebSecurityConfig {
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers(HttpMethod.POST,"/auth/create").permitAll()
         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
         .anyRequest().authenticated()
       );
     return http.build();
