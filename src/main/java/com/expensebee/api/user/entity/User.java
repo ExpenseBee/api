@@ -61,13 +61,21 @@ public class User implements UserDetails {
   @Column(name = "credentials_expired_at")
   private Date credentialsExpiredAt;
 
-  @Column(name = "account_non_locked")
+  @Column(name = "account_non_locked", nullable = false)
   private boolean accountNonLocked;
 
-  @Column(name = "credential_non_expired")
+  @Column(name = "credential_non_expired", nullable = false)
   private boolean credentialsNonExpired;
 
+  @Column(nullable = false)
   private boolean enabled;
+
+  @PrePersist
+  private void prePersist(){
+    this.accountNonLocked = true;
+    this.credentialsNonExpired = true;
+    this.enabled = true;
+  }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
