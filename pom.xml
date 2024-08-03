@@ -91,6 +91,24 @@
       <artifactId>nimbus-jose-jwt</artifactId>
       <version>9.40</version>
     </dependency>
+    
+    <!--flyway-->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>10.10.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency> 
+    
+    <!--Swagger-->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.6.0</version>
+    </dependency>
 
   <!--Swagger-->
     <dependency>
@@ -132,6 +150,22 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>10.10.0</version>
+        <configuration>
+          <url>jdbc:postgresql://localhost:5432/expensebee</url>
+          <user>expensebee</user>
+          <password>expensebee</password>
+          <locations>
+            <location>classpath:db/migration/schema</location>
+            <location>classpath:db/migration/seeds</location>
+          </locations>
+        </configuration>
+      </plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
