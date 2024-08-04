@@ -19,8 +19,10 @@ public class UserMapperImpl implements UserMapper {
   public User toModel(CreateUserRequestDTO user) {
     return modelMapper.map(user, User.class);
   }
-  public User toModel(UpdateUserRequestDTO user) {
-    return modelMapper.map(user, User.class);
+  public User toModel(UpdateUserRequestDTO userRequestDTO, User user) {
+    var userDTOToModel = modelMapper.map(userRequestDTO, User.class);
+
+    return modelMapper.map(userDTOToModel, User.class);
   }
   public UserResponseDTO toDTO(User user) {
     return modelMapper.map(user, UserResponseDTO.class);

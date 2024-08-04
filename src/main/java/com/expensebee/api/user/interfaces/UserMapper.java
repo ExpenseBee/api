@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserMapper {
   User toModel(CreateUserRequestDTO user);
-  User toModel(UpdateUserRequestDTO user);
+  User toModel(UpdateUserRequestDTO userRequestDTO, User user);
   UserResponseDTO toDTO(User user);
   List<UserResponseDTO> toDTO(List<User> users);
 }

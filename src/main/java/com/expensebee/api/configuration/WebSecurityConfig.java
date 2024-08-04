@@ -50,10 +50,10 @@ public class WebSecurityConfig {
     http.oauth2ResourceServer( config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers(HttpMethod.POST,"/auth/create").permitAll()
-        .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
+        .requestMatchers(HttpMethod.POST,"/auth/create","/auth/login").permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-        .requestMatchers(HttpMethod.GET,  "/user/profile").authenticated()
+        .requestMatchers(HttpMethod.GET,"/user/profile").authenticated()
+        .requestMatchers(HttpMethod.PUT,"/user/profile").authenticated()
         .anyRequest().authenticated()
       );
     return http.build();

@@ -1,6 +1,7 @@
 package com.expensebee.api.user;
 
 import com.expensebee.api.unitOfWork.interfaces.UnitOfWork;
+import com.expensebee.api.user.dto.UpdateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.entity.User;
 import com.expensebee.api.user.interfaces.UserService;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
   private final UnitOfWork uow;
   private final UserMapper userMapper;
 
-  private Jwt getClaimsFromToken() {
+  private Jwt getJwtFromToken() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication instanceof JwtAuthenticationToken) {
       return (Jwt) authentication.getPrincipal();
@@ -44,9 +45,26 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserResponseDTO currentUser() {
-    var username = getClaimsFromToken().getClaimAsString("sub");
+    var username = getJwtFromToken().getClaimAsString("sub");
     var user = uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     return userMapper.toDTO(user);
   }
+
+  @Override
+  public UserResponseDTO update(UpdateUserRequestDTO userRequestDTO) {
+    if (userRequestDTO == null) {
+      throw new IllegalArgumentException("UserRequestDTO is null");
+    }
+
+    var usernameInJwt = getJwtFromToken().getClaimAsString("sub");
+    var userFound = uow.getUserRepository().findByUserName(usernameInJwt).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+
+    var userModel = userMapper.toModel(userRequestDTO, userFound);
+
+    var userUpdated = uow.getUserRepository().save(userModel);
+
+    return userMapper.toDTO(userUpdated);
+  }
+
 }
