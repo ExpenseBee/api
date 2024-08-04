@@ -25,6 +25,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -35,6 +37,7 @@ import java.security.interfaces.RSAPublicKey;
 public class WebSecurityConfig {
   private final UserService userService;
   private final PasswordEncoder bCryptPasswordEncoder;
+
   @Value("${jwt.public.key}")
   private RSAPublicKey publicKey;
   @Value("${jwt.private.key}")
@@ -43,12 +46,14 @@ public class WebSecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable);
-    http.oauth2ResourceServer( config -> config.jwt(Customizer.withDefaults()));
+    http.cors(AbstractHttpConfigurer::disable);
+    http.oauth2ResourceServer( config -> config.jwt(jwt -> jwt.decoder(jwtDecoder())));
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     http.authorizeHttpRequests(authorize -> authorize
         .requestMatchers(HttpMethod.POST,"/auth/create").permitAll()
         .requestMatchers(HttpMethod.POST,"/auth/login").permitAll()
         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+        .requestMatchers(HttpMethod.GET,  "/user/profile").authenticated()
         .anyRequest().authenticated()
       );
     return http.build();
