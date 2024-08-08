@@ -1,11 +1,11 @@
 package com.expensebee.api.user;
 
 import com.expensebee.api.email.interfaces.EmailService;
-import com.expensebee.api.unitOfWork.interfaces.UnitOfWork;
 import com.expensebee.api.user.dto.ChargePasswordRequestDTO;
 import com.expensebee.api.user.dto.UpdateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.entity.User;
+import com.expensebee.api.user.interfaces.UserRepository;
 import com.expensebee.api.user.interfaces.UserService;
 import com.expensebee.api.user.interfaces.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-  private final UnitOfWork uow;
+  private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
@@ -41,17 +41,17 @@ public class UserServiceImpl implements UserService {
     if (username.isBlank()){
       throw new IllegalArgumentException("Username is blank");
     }
-    return uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    return userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
   }
 
   public User findByUserName(String userName) {
-    return uow.getUserRepository().findByEmail(userName).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    return userRepository.findByEmail(userName).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
   }
 
   @Override
   public UserResponseDTO currentUser() {
     var username = getJwtToken().getClaimAsString("sub");
-    var user = uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     return userMapper.toDTO(user);
   }
@@ -63,11 +63,11 @@ public class UserServiceImpl implements UserService {
     }
 
     var usernameInJwt = getJwtToken().getClaimAsString("sub");
-    var userFound = uow.getUserRepository().findByUserName(usernameInJwt).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    var userFound = userRepository.findByUsername(usernameInJwt).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     var userModel = userMapper.toModel(userRequestDTO, userFound);
 
-    var userUpdated = uow.getUserRepository().save(userModel);
+    var userUpdated = userRepository.save(userModel);
 
     return userMapper.toDTO(userUpdated);
   }
@@ -75,19 +75,19 @@ public class UserServiceImpl implements UserService {
   @Override
   public String chargePassword(ChargePasswordRequestDTO chargePasswordRequestDTO) {
     var username = getJwtToken().getClaimAsString("sub");
-    var user = uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    var user = userRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     chargePasswordRequestDTO.setPassword(passwordEncoder.encode(chargePasswordRequestDTO.getPassword()));
     var userChargedPassword = userMapper.toModel(chargePasswordRequestDTO, user);
 
-    uow.getUserRepository().save(userChargedPassword);
+    userRepository.save(userChargedPassword);
 
     return "Your password has been charged";
   }
 
   @Override
   public void delete() {
-    var user = uow.getUserRepository().findByUserName(getJwtToken().getClaimAsString("sub")).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
-    uow.getUserRepository().delete(user);
+    var user = userRepository.findByUsername(getJwtToken().getClaimAsString("sub")).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    userRepository.delete(user);
   }
 }

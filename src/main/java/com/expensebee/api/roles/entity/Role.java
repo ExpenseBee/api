@@ -1,4 +1,4 @@
-package com.expensebee.api.user.entity;
+package com.expensebee.api.roles.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
