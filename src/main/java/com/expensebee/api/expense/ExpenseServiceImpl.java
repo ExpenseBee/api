@@ -5,6 +5,7 @@ import com.expensebee.api.expense.dto.ExpenseResDTO;
 import com.expensebee.api.expense.interfaces.ExpenseMapper;
 import com.expensebee.api.expense.interfaces.ExpenseRepository;
 import com.expensebee.api.expense.interfaces.ExpenseService;
+import com.expensebee.api.user.interfaces.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,18 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ExpenseServiceImpl implements ExpenseService {
-  private ExpenseRepository expenseRepository;
-  private ExpenseMapper expenseMapper;
+  private final ExpenseRepository expenseRepository;
+  private final ExpenseMapper expenseMapper;
+  private final UserService userService;
 
   @Override
   public ExpenseResDTO create(ExpenseReqDTO expenseReqDTO) {
     var expense = expenseMapper.toModel(expenseReqDTO);
+
+    var username = userService.getJwtToken().getClaimAsString("sub");
+    var user = userService.findByUserName(username);
+    expense.setUser(user);
+
     var expenseSaved = expenseRepository.save(expense);
     return expenseMapper.ToDTO(expenseSaved);
   }
