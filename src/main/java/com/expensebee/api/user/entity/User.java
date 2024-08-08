@@ -1,5 +1,6 @@
 package com.expensebee.api.user.entity;
 
+import com.expensebee.api.expense.entity.Expense;
 import com.expensebee.api.roles.entity.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,9 @@ public class User implements UserDetails {
     inverseJoinColumns = @JoinColumn(name = "role_id")
   )
   private List<Role> roles;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  private List<Expense> expenses;
 
   @CreationTimestamp()
   @Column(name = "created_at")

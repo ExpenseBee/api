@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
   private final PasswordEncoder passwordEncoder;
   private final EmailService emailService;
 
-  private Jwt getJwtToken() {
+  public Jwt getJwtToken() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication instanceof JwtAuthenticationToken) {
       return (Jwt) authentication.getPrincipal();

@@ -21,9 +21,8 @@ public class UserMapperImpl implements UserMapper {
     return modelMapper.map(user, User.class);
   }
   public User toModel(UpdateUserRequestDTO userRequestDTO, User user) {
-    var userDTOToModel = modelMapper.map(userRequestDTO, User.class);
-
-    return modelMapper.map(userDTOToModel, User.class);
+    modelMapper.map(userRequestDTO, user);
+    return user;
   }
   public UserResponseDTO toDTO(User user) {
     return modelMapper.map(user, UserResponseDTO.class);
@@ -34,8 +33,7 @@ public class UserMapperImpl implements UserMapper {
 
   @Override
   public User toModel(ChargePasswordRequestDTO passwordRequestDTO, User user) {
-    var userDTOToModel = modelMapper.map(passwordRequestDTO, User.class);
-
-    return modelMapper.map(userDTOToModel, User.class);
+    modelMapper.map(passwordRequestDTO, user);
+    return user;
   }
 }

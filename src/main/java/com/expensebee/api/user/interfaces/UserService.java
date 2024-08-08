@@ -6,6 +6,7 @@ import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.entity.User;
 import jakarta.mail.MessagingException;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 public interface UserService extends UserDetailsService {
   User findByUserName(String userName);
@@ -13,4 +14,5 @@ public interface UserService extends UserDetailsService {
   UserResponseDTO update(UpdateUserRequestDTO userRequestDTO);
   String chargePassword(ChargePasswordRequestDTO chargePasswordRequestDTO);
   void delete();
+  Jwt getJwtToken();
 }
