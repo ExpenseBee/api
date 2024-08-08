@@ -1,5 +1,6 @@
 package com.expensebee.api.user;
 
+import com.expensebee.api.user.dto.ChargePasswordRequestDTO;
 import com.expensebee.api.user.dto.CreateUserRequestDTO;
 import com.expensebee.api.user.dto.UpdateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
@@ -29,5 +30,12 @@ public class UserMapperImpl implements UserMapper {
   }
   public List<UserResponseDTO> toDTO(List<User> users) {
     return users.stream().map(this::toDTO).toList();
+  }
+
+  @Override
+  public User toModel(ChargePasswordRequestDTO passwordRequestDTO, User user) {
+    var userDTOToModel = modelMapper.map(passwordRequestDTO, User.class);
+
+    return modelMapper.map(userDTOToModel, User.class);
   }
 }

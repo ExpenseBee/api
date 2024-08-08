@@ -1,6 +1,8 @@
 package com.expensebee.api.user;
 
+import com.expensebee.api.email.interfaces.EmailService;
 import com.expensebee.api.unitOfWork.interfaces.UnitOfWork;
+import com.expensebee.api.user.dto.ChargePasswordRequestDTO;
 import com.expensebee.api.user.dto.UpdateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.entity.User;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -21,8 +24,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
   private final UnitOfWork uow;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
+  private final EmailService emailService;
 
-  private Jwt getJwtFromToken() {
+  private Jwt getJwtToken() {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication instanceof JwtAuthenticationToken) {
       return (Jwt) authentication.getPrincipal();
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserResponseDTO currentUser() {
-    var username = getJwtFromToken().getClaimAsString("sub");
+    var username = getJwtToken().getClaimAsString("sub");
     var user = uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     return userMapper.toDTO(user);
@@ -57,7 +62,7 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("UserRequestDTO is null");
     }
 
-    var usernameInJwt = getJwtFromToken().getClaimAsString("sub");
+    var usernameInJwt = getJwtToken().getClaimAsString("sub");
     var userFound = uow.getUserRepository().findByUserName(usernameInJwt).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
 
     var userModel = userMapper.toModel(userRequestDTO, userFound);
@@ -67,4 +72,22 @@ public class UserServiceImpl implements UserService {
     return userMapper.toDTO(userUpdated);
   }
 
+  @Override
+  public String chargePassword(ChargePasswordRequestDTO chargePasswordRequestDTO) {
+    var username = getJwtToken().getClaimAsString("sub");
+    var user = uow.getUserRepository().findByUserName(username).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+
+    chargePasswordRequestDTO.setPassword(passwordEncoder.encode(chargePasswordRequestDTO.getPassword()));
+    var userChargedPassword = userMapper.toModel(chargePasswordRequestDTO, user);
+
+    uow.getUserRepository().save(userChargedPassword);
+
+    return "Your password has been charged";
+  }
+
+  @Override
+  public void delete() {
+    var user = uow.getUserRepository().findByUserName(getJwtToken().getClaimAsString("sub")).orElseThrow(() -> new EntityNotFoundException("User with this username not found"));
+    uow.getUserRepository().delete(user);
+  }
 }
