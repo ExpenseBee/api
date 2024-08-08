@@ -10,4 +10,5 @@ public interface ExpenseMapper {
   Expense toModel(ExpenseReqDTO expenseReqDTO);
   ExpenseResDTO ToDTO(Expense expense);
   List<ExpenseResDTO> ToDTO(List<Expense> expenseList);
+  Expense toModel(ExpenseReqDTO expenseReqDTO, Expense expense);
 }

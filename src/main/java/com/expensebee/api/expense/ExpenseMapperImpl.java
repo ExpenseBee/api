@@ -29,4 +29,10 @@ public class ExpenseMapperImpl implements ExpenseMapper {
   public List<ExpenseResDTO> ToDTO(List<Expense> expenseList) {
     return expenseList.stream().map(expense -> mapper.map(expense, ExpenseResDTO.class)).toList();
   }
+
+  @Override
+  public Expense toModel(ExpenseReqDTO expenseReqDTO, Expense expense) {
+    mapper.map(expenseReqDTO, expense);
+    return expense;
+  }
 }
