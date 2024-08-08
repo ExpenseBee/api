@@ -8,6 +8,7 @@ public enum ExpenseType {
   ENTERTAINMENT("Entertainment"),
   HEALTH("Health"),
   EDUCATION("Education"),
+  INVESTMENT("Investment"),
   OTHER("Other");
 
   @Getter
