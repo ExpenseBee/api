@@ -1,5 +1,6 @@
 package com.expensebee.api.user;
 
+import com.expensebee.api.user.dto.ChargePasswordRequestDTO;
 import com.expensebee.api.user.dto.UpdateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.interfaces.UserService;
@@ -38,7 +39,28 @@ public class UserController {
     @ApiResponse(responseCode = "404", description = "User with this username not found"),
   })
   @PutMapping("profile")
-  public ResponseEntity<UserResponseDTO> update(@RequestBody() UpdateUserRequestDTO userRequest) {
+  public ResponseEntity<UserResponseDTO> update(@RequestBody UpdateUserRequestDTO userRequest) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.update(userRequest));
+  }
+
+  @Operation(summary = "Charge password!")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "User has been update password successfully!"),
+    @ApiResponse(responseCode = "404", description = "User not found!"),
+  })
+  @PatchMapping("profile")
+  public ResponseEntity<String> chargePassword(@RequestBody ChargePasswordRequestDTO passwordRequestDTO) {
+    return ResponseEntity.status(HttpStatus.OK).body(userService.chargePassword(passwordRequestDTO));
+  }
+
+  @Operation(summary = "Delete user!")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "204", description = "No content!"),
+    @ApiResponse(responseCode = "404", description = "User not found!")
+  })
+  @DeleteMapping("account")
+  public ResponseEntity<Void> delete() {
+    userService.delete();
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
