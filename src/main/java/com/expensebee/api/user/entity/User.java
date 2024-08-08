@@ -1,5 +1,6 @@
 package com.expensebee.api.user.entity;
 
+import com.expensebee.api.roles.entity.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
