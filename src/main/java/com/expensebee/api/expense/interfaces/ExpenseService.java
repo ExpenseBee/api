@@ -11,5 +11,5 @@ public interface ExpenseService {
   ExpenseResDTO update(UUID id, ExpenseReqDTO expense);
   void delete(UUID id);
   ExpenseResDTO findById(UUID id);
-  List<ExpenseResDTO> findAll();
+  List<ExpenseResDTO> findAllByUserId();
 }

@@ -25,6 +25,10 @@ public class ExpenseRepositoryImpl implements ExpenseRepository {
     return expenseRepository.findAll();
   }
 
+  public List<Expense> findAllByUserId(UUID id) {
+    return expenseRepository.findAllByUserId(id);
+  }
+
   @Override
   public Expense save(Expense expense) {
     return expenseRepository.save(expense);

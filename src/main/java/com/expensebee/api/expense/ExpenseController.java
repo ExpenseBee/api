@@ -29,13 +29,6 @@ public class ExpenseController {
     return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.create(expenseResDTO));
   }
 
-  @Operation(summary = "Returns all user expense!")
-  @ApiResponse(responseCode = "200", description = "List of expense!")
-  @GetMapping("categories/all")
-  public ResponseEntity<List<ExpenseResDTO>> allExpenses() {
-    return ResponseEntity.status(HttpStatus.OK).body(expenseService.findAll());
-  }
-
   @Operation(summary = "Return expense by id!")
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Expense found!"),
@@ -65,5 +58,12 @@ public class ExpenseController {
   public ResponseEntity<ExpenseResDTO> deleteById(@PathVariable UUID id) {
     expenseService.delete(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @Operation(summary = "Returns all user expenses!")
+  @ApiResponse(responseCode = "200", description = "List of expense!")
+  @GetMapping("categories/all-by-id")
+  public ResponseEntity<List<ExpenseResDTO>> findAllByUserId() {
+    return ResponseEntity.status(HttpStatus.OK).body(expenseService.findAllByUserId());
   }
 }
