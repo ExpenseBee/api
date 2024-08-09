@@ -1,6 +1,5 @@
 package com.expensebee.api.expense.interfaces;
 
-import com.expensebee.api.expense.dto.ExpenseResDTO;
 import com.expensebee.api.expense.entity.Expense;
 
 import java.util.List;
