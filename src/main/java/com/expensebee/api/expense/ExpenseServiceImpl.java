@@ -54,8 +54,13 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public List<ExpenseResDTO> findAll() {
-    var expenses = expenseRepository.findAll();
+  public List<ExpenseResDTO> findAllByUserId() {
+    var user = userService.findByUserName(
+      userService
+        .getJwtToken()
+        .getClaimAsString("sub"));
+
+    var expenses = expenseRepository.findAllByUserId(user.getId());
     return expenseMapper.ToDTO(expenses);
   }
 }

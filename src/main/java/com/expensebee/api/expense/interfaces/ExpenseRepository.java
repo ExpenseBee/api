@@ -1,6 +1,5 @@
 package com.expensebee.api.expense.interfaces;
 
-import com.expensebee.api.expense.dto.ExpenseResDTO;
 import com.expensebee.api.expense.entity.Expense;
 
 import java.util.List;
@@ -13,4 +12,5 @@ public interface ExpenseRepository {
   Expense save(Expense expense);
   Expense update(Expense expense);
   void deleteById(UUID id);
+  List<Expense> findAllByUserId(UUID id);
 }
