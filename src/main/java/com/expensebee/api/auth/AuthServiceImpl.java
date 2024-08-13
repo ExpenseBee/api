@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -46,8 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
     var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
-    var jwt = jwtService.generate(authentication);
-    return authMapper.toDTO(user, jwt);
+    var jwt = jwtService.generateTokens(authentication);
+    return authMapper.toDTO(jwt);
   }
-
 }

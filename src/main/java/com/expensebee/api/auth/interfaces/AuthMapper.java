@@ -1,8 +1,8 @@
 package com.expensebee.api.auth.interfaces;
 
 import com.expensebee.api.auth.dto.LoginResponseDTO;
-import com.expensebee.api.user.entity.User;
+import com.expensebee.api.infra.security.entity.Tokens;
 
 public interface AuthMapper {
-  LoginResponseDTO toDTO(User user, String token);
+  LoginResponseDTO toDTO(Tokens tokens);
 }
