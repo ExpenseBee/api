@@ -12,8 +12,6 @@ import java.util.UUID;
 
 public interface RefreshTokenRepositoryExt extends JpaRepository<RefreshToken, UUID> {
 
-  Optional<RefreshToken> findByRefreshToken(String refreshToken);
-
   @Query("SELECT r FROM RefreshToken r WHERE r.user = :user")
   Optional<RefreshToken> findByUser(@Param("user") User user);
 

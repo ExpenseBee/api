@@ -41,9 +41,4 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
   public Optional<RefreshToken> findByRefreshTokenId(UUID uuid) {
     return refreshTokenRepository.findById(uuid);
   }
-
-  @Override
-  public Optional<RefreshToken> findByUserId(UUID userId) {
-    return refreshTokenRepository.findByUserId(userId);
-  }
 }

@@ -8,5 +8,4 @@ public interface RefreshTokenService {
   void save(String refreshToken);
   void save(String refreshToken, String username);
   void delete(UUID id);
-  void delete(User user);
 }

@@ -44,12 +44,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     refreshTokenRepository.deleteById(refreshTokenFound.getId());
   }
-
-  @Override
-  public void delete(User user) {
-    var refreshToken = refreshTokenRepository.findByUserId(user.getId())
-      .orElseThrow(() -> new EntityNotFoundException("Token não encontrado para o usuário"));
-
-    refreshTokenRepository.delete(refreshToken);
-  }
 }
