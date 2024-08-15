@@ -5,6 +5,7 @@ import com.expensebee.api.auth.dto.LoginResponseDTO;
 import com.expensebee.api.auth.interfaces.AuthMapper;
 import com.expensebee.api.auth.interfaces.AuthService;
 import com.expensebee.api.infra.security.interfaces.JWTService;
+import com.expensebee.api.refresh_token.interfaces.RefreshTokenService;
 import com.expensebee.api.user.dto.CreateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import com.expensebee.api.user.interfaces.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +28,9 @@ public class AuthServiceImpl implements AuthService {
   private final UserMapper userMapper;
   private final AuthMapper authMapper;
   private final JWTService jwtService;
-  private final AuthenticationManager authenticationManager;
   private final PasswordEncoder bCryptPasswordEncoder;
+  private final RefreshTokenService refreshTokenService;
+  private final AuthenticationManager authenticationManager;
 
   @Override
   public UserResponseDTO register(CreateUserRequestDTO createUserRequestDTO) {
@@ -45,10 +48,13 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public LoginResponseDTO login(LoginDTO login) {
     var user = userRepository.findByUsername(login.getUsername()).orElseThrow(EntityNotFoundException::new);
+    refreshTokenService.delete(user.getRefreshToken().getId());
 
     var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
     var jwt = jwtService.generateTokens(authentication);
+    refreshTokenService.save(jwt.getRefreshToken(), user.getUsername());
+
     return authMapper.toDTO(jwt);
   }
 }
