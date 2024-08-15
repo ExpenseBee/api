@@ -43,6 +43,12 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
   }
 
+  @Operation(summary = "New tokens!")
+  @ApiResponses(value = {
+    @ApiResponse(responseCode = "200", description = "New tokens created successful!"),
+    @ApiResponse(responseCode = "404", description = "User not exist!"),
+    @ApiResponse(responseCode = "404", description = "Refresh Token not exist!")
+  })
   @GetMapping("new-tokens/{refreshToken}")
   public ResponseEntity<Tokens> newTokens(@PathVariable String refreshToken) {
     return ResponseEntity.status(HttpStatus.OK).body(authService.newTokens(refreshToken));
