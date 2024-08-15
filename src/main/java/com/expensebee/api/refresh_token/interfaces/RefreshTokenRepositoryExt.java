@@ -15,8 +15,8 @@ public interface RefreshTokenRepositoryExt extends JpaRepository<RefreshToken, U
   @Query("SELECT r FROM RefreshToken r WHERE r.user = :user")
   Optional<RefreshToken> findByUser(@Param("user") User user);
 
-  @Query("SELECT r FROM RefreshToken r WHERE r.user.id = :userId")
-  Optional<RefreshToken> findByUserId(@Param("userId") UUID userId);
+  @Query("SELECT r FROM RefreshToken r WHERE r.refreshToken = :refreshToken")
+  Optional<RefreshToken> findByRefreshToken(@Param("refreshToken") String refreshToken);
 
   @Modifying
   @Query("DELETE FROM RefreshToken r WHERE r.id = :refreshTokenId")

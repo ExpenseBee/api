@@ -2,19 +2,19 @@ package com.expensebee.api.auth;
 
 import com.expensebee.api.auth.dto.LoginDTO;
 import com.expensebee.api.auth.dto.LoginResponseDTO;
+import com.expensebee.api.infra.security.entity.Tokens;
 import com.expensebee.api.user.dto.CreateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +41,10 @@ public class AuthController {
   @PostMapping("login")
   public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginRequest){
     return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
+  }
+
+  @GetMapping("new-tokens/{refreshToken}")
+  public ResponseEntity<Tokens> newTokens(@PathVariable String refreshToken) {
+    return ResponseEntity.status(HttpStatus.OK).body(authService.newTokens(refreshToken));
   }
 }

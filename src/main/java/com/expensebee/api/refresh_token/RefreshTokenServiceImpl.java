@@ -3,7 +3,6 @@ package com.expensebee.api.refresh_token;
 import com.expensebee.api.refresh_token.entity.RefreshToken;
 import com.expensebee.api.refresh_token.interfaces.RefreshTokenRepository;
 import com.expensebee.api.refresh_token.interfaces.RefreshTokenService;
-import com.expensebee.api.user.entity.User;
 import com.expensebee.api.user.interfaces.UserRepository;
 import com.expensebee.api.user.interfaces.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,5 +42,14 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
       );
 
     refreshTokenRepository.deleteById(refreshTokenFound.getId());
+  }
+
+  @Override
+  public RefreshToken findRefreshToken(String refreshToken) {
+    return refreshTokenRepository
+      .findByRefreshToken(refreshToken)
+      .orElseThrow(() ->
+        new EntityNotFoundException("Token not found")
+      );
   }
 }
