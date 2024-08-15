@@ -1,5 +1,7 @@
 package com.expensebee.api.infra.security;
 
+import com.expensebee.api.infra.security.entity.ExpirationTime;
+import com.expensebee.api.infra.security.entity.Tokens;
 import com.expensebee.api.infra.security.interfaces.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -10,6 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,9 +21,9 @@ public class JWTServiceImpl implements JWTService {
   private final JwtEncoder jwtEncoder;
 
   @Override
-  public String generate(Authentication authentication) {
+  public String generate(Authentication authentication, Optional<Long> expirationTime) {
     var instant = Instant.now();
-    var exp = 36000L;
+    var exp = expirationTime.orElse(ExpirationTime.FIVE_MINUTES.getValue());
 
     var scope = authentication
       .getAuthorities().stream()
@@ -36,5 +39,12 @@ public class JWTServiceImpl implements JWTService {
       .build();
 
     return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+  }
+
+  @Override
+  public Tokens generateTokens(Authentication authentication) {
+    var accessToken = this.generate(authentication, Optional.empty());
+    var refreshToken = this.generate(authentication, Optional.of(ExpirationTime.FIVE_HOURS.getValue()));
+    return new Tokens(accessToken, refreshToken);
   }
 }
