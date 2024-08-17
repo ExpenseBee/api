@@ -14,11 +14,15 @@ import com.expensebee.api.user.interfaces.UserMapper;
 import com.expensebee.api.user.interfaces.UserService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 
@@ -75,5 +79,17 @@ public class AuthServiceImpl implements AuthService {
     refreshTokenService.save(jwt.getRefreshToken(), user.getUsername());
 
     return jwt;
+  }
+
+  @Override
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
+    var authentication = SecurityContextHolder
+      .getContext()
+      .getAuthentication();
+
+    new SecurityContextLogoutHandler()
+      .logout(request, response, authentication);
+    SecurityContextHolder
+      .clearContext();
   }
 }

@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,5 +52,11 @@ public class AuthController {
   @GetMapping("new-tokens/{refreshToken}")
   public ResponseEntity<Tokens> newTokens(@PathVariable String refreshToken) {
     return ResponseEntity.status(HttpStatus.OK).body(authService.newTokens(refreshToken));
+  }
+
+  @PostMapping("logout")
+  public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+    authService.logout(request, response);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
