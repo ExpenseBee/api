@@ -6,7 +6,6 @@ import com.expensebee.api.auth.interfaces.AuthMapper;
 import com.expensebee.api.auth.interfaces.AuthService;
 import com.expensebee.api.infra.security.entity.Tokens;
 import com.expensebee.api.infra.security.interfaces.JWTService;
-import com.expensebee.api.refresh_token.interfaces.RefreshTokenRepositoryExt;
 import com.expensebee.api.refresh_token.interfaces.RefreshTokenService;
 import com.expensebee.api.user.dto.CreateUserRequestDTO;
 import com.expensebee.api.user.dto.UserResponseDTO;
