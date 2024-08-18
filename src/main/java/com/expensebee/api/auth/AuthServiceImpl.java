@@ -54,7 +54,6 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public LoginResponseDTO login(LoginDTO login) {
     var user = userRepository.findByUsername(login.getUsername()).orElseThrow(EntityNotFoundException::new);
-    refreshTokenService.delete(user.getRefreshToken().getId());
 
     var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
@@ -86,6 +85,11 @@ public class AuthServiceImpl implements AuthService {
     var authentication = SecurityContextHolder
       .getContext()
       .getAuthentication();
+
+    var username = userService.getJwtToken().getClaimAsString("sub");
+    var refreshToken = userService.findByUserName(username).getRefreshToken();
+    var refreshTokenFound = refreshTokenService.findRefreshToken(refreshToken.getRefreshToken());
+    refreshTokenService.delete(refreshTokenFound.getId());
 
     new SecurityContextLogoutHandler()
       .logout(request, response, authentication);
