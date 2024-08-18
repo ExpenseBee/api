@@ -14,15 +14,17 @@ import com.expensebee.api.user.interfaces.UserMapper;
 import com.expensebee.api.user.interfaces.UserService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +54,6 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public LoginResponseDTO login(LoginDTO login) {
     var user = userRepository.findByUsername(login.getUsername()).orElseThrow(EntityNotFoundException::new);
-    refreshTokenService.delete(user.getRefreshToken().getId());
 
     var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()));
 
@@ -77,5 +78,22 @@ public class AuthServiceImpl implements AuthService {
     refreshTokenService.save(jwt.getRefreshToken(), user.getUsername());
 
     return jwt;
+  }
+
+  @Override
+  public void logout(HttpServletRequest request, HttpServletResponse response) {
+    var authentication = SecurityContextHolder
+      .getContext()
+      .getAuthentication();
+
+    var username = userService.getJwtToken().getClaimAsString("sub");
+    var refreshToken = userService.findByUserName(username).getRefreshToken();
+    var refreshTokenFound = refreshTokenService.findRefreshToken(refreshToken.getRefreshToken());
+    refreshTokenService.delete(refreshTokenFound.getId());
+
+    new SecurityContextLogoutHandler()
+      .logout(request, response, authentication);
+    SecurityContextHolder
+      .clearContext();
   }
 }
